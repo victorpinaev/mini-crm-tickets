@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
+use App\Services\TicketService;
 
 class WidgetController extends Controller
 {
+    public function __construct(private TicketService $ticketService) {}
+
     public function show()
     {
         return view('widget');
@@ -13,7 +16,10 @@ class WidgetController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
-        $request->validated();
+        $ticket = $this->ticketService->create(
+            $request->validated(),
+            $request->file('files', [])
+        );
 
         return response()->json([
             'success' => true,
