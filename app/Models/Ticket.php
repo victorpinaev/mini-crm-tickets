@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 
 class Ticket extends Model implements HasMedia
 {
@@ -58,4 +60,22 @@ class Ticket extends Model implements HasMedia
         return $this->status === self::STATUS_DONE;
     }
 
+    public function scopeToday(Builder $query): Builder
+    {
+        return $query->whereDate('created_at', Carbon::today());
+    }
+
+    public function scopeThisWeek(Builder $query): Builder
+    {
+        return $query->whereBetween('created_at', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek(),
+        ]);
+    }
+
+    public function scopeThisMonth(Builder $query): Builder
+    {
+        return $query->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year);
+    }
 }
