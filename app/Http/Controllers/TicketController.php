@@ -7,11 +7,37 @@ use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = Ticket::with('customer')
-            ->orderByDesc('created_at')
-            ->paginate(10);
+        $query = Ticket::query()
+            ->with('customer')
+            ->orderByDesc('created_at');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('email')) {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('email', 'like', '%' . $request->email . '%');
+            });
+        }
+
+        if ($request->filled('phone')) {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('phone', 'like', '%' . $request->phone . '%');
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $tickets = $query->paginate(10)->withQueryString();
 
         return view('tickets.index', compact('tickets'));
     }
