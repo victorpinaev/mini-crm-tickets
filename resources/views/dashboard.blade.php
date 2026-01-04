@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard')
+
 @section('content')
     <div class="container">
         <h1>Админ-панель</h1>
 
         <div class="mt-4">
             @role('manager')
-            <a href="{{ route('tickets.index') }}" class="btn btn-primary">
+            <a href="{{ route('tickets.index') }}" class="btn btn-primary me-2">
                 Управление тикетами
             </a>
             @endrole

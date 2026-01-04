@@ -13,10 +13,18 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <a class="navbar-brand" href="{{ url('/') }}">MiniCRM</a>
+    <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">
+        MiniCRM
+    </a>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
             @auth
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-semibold' : '' }}"
+                       href="{{ route('dashboard') }}">
+                        Dashboard
+                    </a>
+                </li>
                 <li class="nav-item">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
